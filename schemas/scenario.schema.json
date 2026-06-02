@@ -1,0 +1,118 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "bus-charging-scenario",
+  "title": "Bus Charging Scenario",
+  "description": "Input format for the bus charging scheduler. Each scenario file is self-contained.",
+  "type": "object",
+  "required": ["schema_version", "id", "name", "simulation", "route", "weights", "buses"],
+  "properties": {
+    "schema_version": {
+      "type": "string",
+      "const": "1.0"
+    },
+    "id": {
+      "type": "string",
+      "pattern": "^scenario_\\d{2}$"
+    },
+    "name": {
+      "type": "string"
+    },
+    "description": {
+      "type": "string"
+    },
+    "simulation": {
+      "type": "object",
+      "required": ["speed_kmh", "battery_range_km", "charge_duration_min"],
+      "properties": {
+        "speed_kmh": {
+          "type": "number",
+          "minimum": 1,
+          "description": "Constant travel speed. Travel minutes = distance_km when speed is 60."
+        },
+        "battery_range_km": {
+          "type": "number",
+          "minimum": 1
+        },
+        "charge_duration_min": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "charge_to_full": {
+          "type": "boolean",
+          "default": true
+        }
+      }
+    },
+    "route": {
+      "type": "object",
+      "required": ["id", "stops", "segment_distances_km", "scheduling_stations"],
+      "properties": {
+        "id": { "type": "string" },
+        "stops": {
+          "type": "array",
+          "items": { "type": "string" },
+          "minItems": 2,
+          "description": "Ordered stop IDs from one end of the route to the other."
+        },
+        "segment_distances_km": {
+          "type": "array",
+          "items": { "type": "number", "minimum": 0 },
+          "description": "One distance per adjacent stop pair; length must be len(stops) - 1."
+        },
+        "scheduling_stations": {
+          "type": "array",
+          "items": { "type": "string" },
+          "description": "Subset of stops with scheduler-managed chargers (excludes endpoint slow chargers)."
+        },
+        "stations": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "object",
+            "required": ["chargers"],
+            "properties": {
+              "chargers": { "type": "integer", "minimum": 1 }
+            }
+          },
+          "description": "Per-station config. Omitted stations default to 1 charger."
+        }
+      }
+    },
+    "operators": {
+      "type": "array",
+      "items": { "type": "string" },
+      "description": "Known operators in this scenario. Informational; buses reference operator by id."
+    },
+    "weights": {
+      "type": "object",
+      "required": ["individual", "operator", "overall"],
+      "properties": {
+        "individual": { "type": "number", "minimum": 0 },
+        "operator": { "type": "number", "minimum": 0 },
+        "overall": { "type": "number", "minimum": 0 }
+      }
+    },
+    "buses": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "required": ["id", "operator", "origin", "destination", "departure"],
+        "properties": {
+          "id": { "type": "string" },
+          "operator": { "type": "string" },
+          "origin": { "type": "string" },
+          "destination": { "type": "string" },
+          "departure": {
+            "type": "string",
+            "pattern": "^([01]?\\d|2[0-3]):[0-5]\\d$",
+            "description": "HH:MM 24-hour local time."
+          },
+          "priority": {
+            "type": "integer",
+            "description": "Optional future rule hook for priority buses."
+          }
+        }
+      }
+    }
+  }
+}

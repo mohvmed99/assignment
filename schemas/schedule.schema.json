@@ -1,0 +1,81 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "bus-charging-schedule",
+  "title": "Bus Charging Schedule (Output)",
+  "description": "Scheduler output for one scenario run.",
+  "type": "object",
+  "required": ["scenario_id", "buses", "stations", "metrics"],
+  "properties": {
+    "scenario_id": { "type": "string" },
+    "buses": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["id", "operator", "origin", "destination", "departure", "arrival", "charging_stations", "events", "total_wait_min"],
+        "properties": {
+          "id": { "type": "string" },
+          "operator": { "type": "string" },
+          "origin": { "type": "string" },
+          "destination": { "type": "string" },
+          "departure": { "type": "string" },
+          "arrival": { "type": "string" },
+          "charging_stations": {
+            "type": "array",
+            "items": { "type": "string" },
+            "description": "Stations visited for charging, in route order."
+          },
+          "total_wait_min": { "type": "integer", "minimum": 0 },
+          "events": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "required": ["type", "location", "time"],
+              "properties": {
+                "type": {
+                  "enum": ["depart", "arrive", "wait_start", "charge_start", "charge_end", "arrive_destination"]
+                },
+                "location": { "type": "string" },
+                "time": { "type": "string" },
+                "duration_min": { "type": "integer", "minimum": 0 },
+                "wait_min": { "type": "integer", "minimum": 0 }
+              }
+            }
+          }
+        }
+      }
+    },
+    "stations": {
+      "type": "object",
+      "additionalProperties": {
+        "type": "object",
+        "required": ["charge_order"],
+        "properties": {
+          "charge_order": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "required": ["bus_id", "arrival", "charge_start", "charge_end", "wait_min"],
+              "properties": {
+                "bus_id": { "type": "string" },
+                "arrival": { "type": "string" },
+                "charge_start": { "type": "string" },
+                "charge_end": { "type": "string" },
+                "wait_min": { "type": "integer", "minimum": 0 }
+              }
+            }
+          }
+        }
+      }
+    },
+    "metrics": {
+      "type": "object",
+      "required": ["individual", "operator", "overall", "weighted_total"],
+      "properties": {
+        "individual": { "type": "number" },
+        "operator": { "type": "number" },
+        "overall": { "type": "number" },
+        "weighted_total": { "type": "number" }
+      }
+    }
+  }
+}

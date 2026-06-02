@@ -1,0 +1,55 @@
+{
+  "scenario_id": "scenario_01",
+  "buses": [
+    {
+      "id": "bus-BK-01",
+      "operator": "kpn",
+      "origin": "bengaluru",
+      "destination": "kochi",
+      "departure": "19:00",
+      "arrival": "04:30",
+      "charging_stations": ["A", "C"],
+      "total_wait_min": 0,
+      "events": [
+        { "type": "depart", "location": "bengaluru", "time": "19:00" },
+        { "type": "arrive", "location": "A", "time": "20:40" },
+        { "type": "charge_start", "location": "A", "time": "20:40", "wait_min": 0 },
+        { "type": "charge_end", "location": "A", "time": "21:05", "duration_min": 25 },
+        { "type": "arrive", "location": "C", "time": "00:45" },
+        { "type": "charge_start", "location": "C", "time": "00:45", "wait_min": 0 },
+        { "type": "charge_end", "location": "C", "time": "01:10", "duration_min": 25 },
+        { "type": "arrive_destination", "location": "kochi", "time": "04:30" }
+      ]
+    }
+  ],
+  "stations": {
+    "A": {
+      "charge_order": [
+        {
+          "bus_id": "bus-BK-01",
+          "arrival": "20:40",
+          "charge_start": "20:40",
+          "charge_end": "21:05",
+          "wait_min": 0
+        }
+      ]
+    },
+    "C": {
+      "charge_order": [
+        {
+          "bus_id": "bus-BK-01",
+          "arrival": "00:45",
+          "charge_start": "00:45",
+          "charge_end": "01:10",
+          "wait_min": 0
+        }
+      ]
+    }
+  },
+  "metrics": {
+    "individual": 0,
+    "operator": 0,
+    "overall": 0,
+    "weighted_total": 0
+  }
+}

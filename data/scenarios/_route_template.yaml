@@ -1,0 +1,30 @@
+# Shared route definition — copied into each scenario for self-contained files.
+# Stops are ordered Bengaluru → Kochi. Reverse-direction buses use the same
+# stop list; the scheduler derives travel direction from origin/destination.
+
+route: &default_route
+  id: bengaluru_kochi
+  stops: [bengaluru, A, B, C, D, kochi]
+  segment_distances_km: [100, 120, 100, 120, 100]
+  scheduling_stations: [A, B, C, D]
+  stations:
+    A: { chargers: 1 }
+    B: { chargers: 1 }
+    C: { chargers: 1 }
+    D: { chargers: 1 }
+
+simulation: &default_simulation
+  speed_kmh: 60
+  battery_range_km: 240
+  charge_duration_min: 25
+  charge_to_full: true
+
+weights_default: &default_weights
+  individual: 1.0
+  operator: 1.0
+  overall: 1.0
+
+operators: &default_operators
+  - kpn
+  - freshbus
+  - flixbus
